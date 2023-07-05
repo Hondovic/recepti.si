@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;700&display=swap");
+
+    * {
+      font-family: "Roboto", sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    ::-webkit-scrollbar-track {
+      border-radius: 10px;
+      background-color: rgb(245, 245, 245);
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+      background-color: #ffffff;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      -webkit-box-shadow: inset 0 0 6px rgba(11, 11, 15, 0.3);
+      background-color: #0d00ff;
+    }
+
+    body {
+      background-color: rgb(255, 254, 254);
+    }
+
+    div.container {
+      flex-direction: column;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 20px;
+      width: 1024px;
+      margin-top: 30px;
+
+    }
+
+    div.card {
+      transition: opacity 0.2s ease-out;
+      background-color: rgb(205, 186, 186);
+      width: 100%;
+      height: 300px;
+      margin-left: 100px;
+      display: flex;
+      justify-content: flex-start;
+      border-radius: 25px;
+      box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px
+    }
+
+    div.card.fade-out {
+      opacity: 0;
+    }
+
+    img {
+      height: 100%;
+      border-radius: 25px;
+      aspect-ratio: 1.0;
+      object-fit: cover;
+    }
+
+    div.navbar {
+      background-color: rgb(50, 50, 50);
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: sticky;
+      top: 0px;
+      padding: 15px;
+
+    }
+
+    div.navbar-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 1024px;
+    }
+
+    div.navbar-content h1 {
+      color: azure;
+
+    }
+
+    button {
+      background-color: rgb(4, 0, 255);
+      color: azure;
+      padding: 10px;
+      border-radius: 25px;
+      border: 0;
+      font-weight: bold;
+      cursor: pointer;
+      width: 150px;
+    }
+
+    input {
+      padding: 10px;
+      border-radius: 25px;
+      border: 1px solid rgb(35, 2, 247);
+    }
+
+    div.model-backgraund {
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(50, 50, 50, 0.5);
+      z-index: 10;
+      display: none;
+      justify-content: flex-start;
+      align-items: center;
+
+    }
+
+    div.modal {
+      padding: 10px;
+      background-color: azure;
+      border-radius: 25px;
+      width: 1024px;
+      box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px
+    }
+
+    div.modal-content {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    div.model-content input {
+      margin-bottom: 10px;
+    }
+
+    div.header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+    }
+
+    div.header span {
+      cursor: pointer;
+    }
+
+    .card .notes {
+      height: 100%;
+      overflow-y: auto;
+    }
+
+    div.card-content {
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="model-backgraund" id="modal">
+    <div class="modal">
+      <div class="header">
+        <H1>Dodaj Recept</H1>
+        <span onclick="closeModal()">X</span>
+      </div>
+      <form id="add-recepie">
+      <div class="modal-content">
+        <label>naziv Recepta</label>
+        <input name="naziv" minlength="5" placeholder="naziv Recepta....">
+        <label>Povezava do slike</label>
+        <input name="link" required minlength="5" placeholder="Povezava do slike...."></input>
+        <label>Opis</label>
+        <input name="notes" required minlength="5" placeholder="Opis....">
+      </div>
+      <button>Dodaj</button>
+      </form>
+    </div>
+  </div>
+  <div class="navbar">
+    <div class="navbar-content">
+      <h1>RECEPTI.SI</h1>
+      <DIV>
+        <BUTton onclick="openModal()">Dodaj Recept</BUTton>
+        <input id="search" placeholder="Išči....">
+      </DIV>
+
+    </div>
+  </div>
+
+  <div class="container" id="list">
+    <div class="card">
+      <img
+        src="data:image/jpeg;base64,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">
+      <div class="card-content">
+        <div class="header">
+          <h1>Palačinke</h1>
+          <span onclick="deleteRecepise(this)">X</span>
+        </div>
+        <div class="notes">
+          <p>Sestavine
+            140
+            g
+            bele moke
+            2
+            žlički
+            pecilnega praška
+            0,5
+            žličke
+            soli
+            2
+            žlici
+            sladkorja
+            150
+            ml
+            mleka
+            1
+            jajce
+            30
+            g
+            masla
+            maslo, olje ali kokosova maščoba za peko palačink
+
+            Priprava
+            Na kuhalnik pristavimo kozico, v kateri na nizki temperaturi počasi razpustimo maslo. Ko se maslo stopi,
+            kozico odstavimo.
+
+            V večji skledi zmešamo moko, pecilni prašek, sol in sladkor. V manjši skledi razžvrkljamo jajce z mlekom,
+            nato
+            pa vmešamo ohlajeno stopljeno maslo. Jajčno mešanico vlijemo v skledo s suhimi sestavinami in sestavine z
+            metlico premešamo, da dobimo enotno testo. Ne mešamo prehitro, predolgo ali preveč, saj so majhne grudice
+            dovoljene.
+
+            Ko ameriške palačinke pečemo, ponev najprej dobro segrejemo in namastimo z malo olja, kokosove maščobe ali
+            koščkom masla. Na segreto ponev vlijemo dve žlici mase za eno palačinko (premer je okoli 9 cm). Palačinko
+            pečemo na srednjem ognju in ko se na spodnji strani lepo zlato rjavo zapeče, na zgornji strani pa se
+            pojavijo
+            drobni mehurčki, jo z lopatko previdno obrnemo in spečemo še na drugi strani. Če imamo večjo ponev, lahko v
+            njej hkrati pečeno 2-3 palačinke. Postopek ponavljamo, dokler ne porabimo vsega testa.
+
+            Pečene palačinke zložimo na krožnik in postrežemo s svežim ali pečenim sadjem, različnimi sadnimi, sladkimi
+            ali čokoladnimi prelivi ter marmeladami in džemi.
+          </p>
+        </div>
+      </div>
+
+
+    </div>
+
+    <div class="card">
+      <img src="https://images.24ur.com/media/images/884xX/Oct2017/757870eb72_61979295.jpg?v=9746&fop=fp:0.48:0.45">
+      <div class="card-content">
+        <div class="header">
+          <h1>Steak</h1>
+          <span onclick="deleteRecepise(this)">X</span>
+        </div>
+        <p>Sestavine
+          Za pripravo steaka uporabimo kos govedine z nežnejšim mišičnim tkivom, denimo iz hrbtnega dela, ledij ali
+          reber. Pri takšnih kosih ni potrebe po dolgotrajni termični obdelavi, s katero zmehčamo trša mišična vlakna.
+          Steake popečemo na hitro, čas peke pa prilagodimo debelini in vrsti steaka ter našemu okusu. Večina prisega
+          na
+          srednje pečene, nekateri jedci imajo raje dobro pečene, spet drugi bolj surove. Cenejše, a okusne različice
+          so
+          denimo steaki iz podplečja ali flama, a ker je meso trše, ga moramo pred peko marinirati. Dobro je, če je
+          meso
+          uležano oziroma zorjeno. Odličen okus daje tudi marmoriranost oziroma prepredenost z maščobo.
+        </p>
+      </div>
+    </div>
+  </div>
+
+
+
+
+</body>
+
+<script>
+  var iskanje = document.getElementById("search");
+  var dodajForm = document.getElementById("add-recepie");
+  var modal = document.getElementById("modal")
+  var list = document.getElementById("list")
+
+  window.addEventListener("load", renderlist);
+
+  iskanje.addEventListener("keyup", function (event) {
+    var vrednstIskanja = event.target.value.toLowerCase();
+    var recpti = document.getElementsByClassName("card");
+    for (var recept of recpti) {
+      var nazivRecepta = recept.getElementsByTagName("h1")[0].innerHTML.toLowerCase();
+      recept.style.display = "none";
+      var prikaži = nazivRecepta.includes(vrednstIskanja);
+      if (prikaži) {
+        recept.style.display = "flex";
+      } else {
+        recept.style.display = "none";
+      }
+    }
+
+
+  });
+
+  dodajForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    var naziv = event.srcElement.elements["naziv"].value;
+    var link = event.srcElement.elements["link"].value;
+    var notes = event.srcElement.elements["notes"].value;
+
+    list.innerHTML += `
+    <div class="card">
+      <img
+        src= "${link}"/>
+      <div class="card-content">
+        <div class="header">
+          <h1>${naziv}</h1>
+          <span onclick="deleteRecepise(this)">X</span>
+        </div>
+        <div class="notes">
+          ${notes}
+        </div>
+      </div>
+    </div>    
+    `;
+
+      event.srcElement.reset();
+      closeModal();
+      savelist();
+    });
+    
+
+  function deleteRecepise(element) {
+    var potrdi = confirm("Ali ste prepričani da želite ibrisati recept?");
+    if (potrdi) {
+      var kartica = element.parentNode.parentNode.parentNode;
+      kartica.classList.add("fade-out");
+      setTimeout(function () {
+        kartica.remove();
+        savelist();
+      }, 200)
+
+
+    }
+  }
+
+  function openModal() {
+    modal.style.display = "flex";
+
+  }
+
+  function closeModal() {
+    modal.style.display = "none";
+  }
+
+  function savelist() {
+    localStorage.setItem("list", list.innerHTML)
+  }
+
+  function renderlist() {
+    var novlist = localStorage.getItem("list")
+    if (novlist) {
+      list.innerHTML = novlist;
+    var recpti = document.getElementsByClassName("card");
+    for (var recept of recpti) {
+      recept.style.display = "flex";
+    }
+
+    }
+
+  }
+
+</script>
+
+</html>
